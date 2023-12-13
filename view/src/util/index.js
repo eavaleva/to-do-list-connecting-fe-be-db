@@ -12,12 +12,12 @@
 
 export const createTodo = async (todo) => {
   try {
-    const response = await fetch('todo/create', {
+    const response = await fetch('api/todo/create', {
       method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      // },
-      body: todo,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(todo),
     });
     return response.json();
   } catch (error) {
@@ -32,7 +32,7 @@ export const createTodo = async (todo) => {
 
 export const getTodos = async () => {
   try {
-    const res = await fetch('/todos');
+    const res = await fetch('api/todos');
     const data = await res.json();
     return data;
   } catch (error) {
@@ -48,7 +48,7 @@ export const getTodos = async () => {
  */
 export const removeTodo = async (id) => {
   try {
-    await fetch(`/todo/${id}`, {
+    await fetch(`/api/todo/${id}`, {
       method: 'DELETE',
     });
     return 'deleted';

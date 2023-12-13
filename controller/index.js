@@ -1,4 +1,3 @@
-const { next } = require('express');
 const formidable = require('formidable');
 const { create, get, remove } = require('../model/todo');
 
@@ -24,45 +23,20 @@ exports.create = (req, res) => {
   form.keepExtensions = true;
   form.parse(req, async (err, fields) => {
     const { description } = fields;
-    // check to see if the description field exists in the form
-    // if description doesn't exist, send error
+    // check for all fields
     if (!fields.description) {
       return res.status(400).json({
         error: 'Description is required',
       });
     }
-    // if description exists, add to database using create() function
     try {
       const newTask = await create(description);
       return res.status(201).send({ data: newTask.rows[0] });
     } catch (error) {
-      // if description cannot be added to database, send error
       return res.status(400).json({
         error,
       });
     }
-  });
-};
-
-exports.get = (req, res) => {
-  get((err, result) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.render('index', { title: 'Todo List', todos: result.rows });
-  });
-};
-
-exports.remove = (req, res) => {
-  const { id } = req.params;
-  remove(id, (err, result) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.redirect('/');
-    result.json({ message: 'Task successfully deleted' });
   });
 };
 
@@ -74,11 +48,11 @@ function to return all rows of the table as a response. */
 
 exports.read = async (req, res) => {
   try {
-    const tasks = await get();
-    return res.status(200).send({ data: tasks.rows });
-  } catch (error) {
+    const task = await get();
+    return res.json({ data: task.rows });
+  } catch (err) {
     return res.status(400).json({
-      error,
+      error: err,
     });
   }
 };
@@ -92,10 +66,10 @@ the row with the received id.
 */
 
 exports.removeTodo = async (req, res) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);
   try {
-    const task = await remove(id);
-    return res.status(200).send({ data: task.rows });
+    await remove(id);
+    return res.status(200).send({ data: id });
   } catch (error) {
     return res.status(400).json({
       error,

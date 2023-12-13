@@ -1,5 +1,5 @@
+const { v4: uuidv4 } = require('uuid'); // Import the uuid library
 const pool = require('./database');
-
 /** The application will have the ability to create a task,
  * display the list of tasks, and delete tasks.
  * Each of these functionalities correlates with the following
@@ -26,41 +26,30 @@ Inside the function, use the .query() method on
 pool to pass in the below SQL query:
 */
 
-const create = (description, callback) => {
-  const query = {
-    text: 'INSERT INTO todo (description) VALUES ($1)',
-    values: [description],
-  };
-  pool.query(query, callback);
-};
-
 /**
 Next, we’ll create a function called get that will read all the tasks in the todo table.
 Similar to how we created the create() function, use the .query() method on the pool object.
 Inside the .query() method, pass in the below SQL code to select all items in the todo table:
 */
-const get = (callback) => {
-  const query = {
-    text: 'SELECT * FROM todo',
-  };
-  pool.query(query, callback);
-};
 
 /** Finally, create a function called remove that takes id as its
  * argument to search for a to-do item to remove from the todo table.
  * We will use the .query() method here as well. Inside the argument of the .query() method,
  * pass in the below SQL code to find an item where todo_id of the todo table is equal to id:
  * */
-const remove = (id, callback) => {
-  const query = {
-    text: 'DELETE FROM todo WHERE todo_id = $1',
-    values: [id],
-  };
-  pool.query(query, callback);
-};
 
-module.exports = {
-  create,
-  get,
-  remove,
-};
+pool.connect();
+
+const create = (todo) =>
+  // eslint-disable-next-line implicit-arrow-linebreak
+  pool.query('INSERT INTO todo (todo_id, description, created_at) VALUES ($1, $2, $3) RETURNING *', [
+    todo.todo_id,
+    todo.description,
+    todo.created_at,
+  ]);
+
+const get = () => pool.query('SELECT * FROM todo');
+
+const remove = (id) => pool.query('DELETE FROM todo WHERE todo_id = $1', [id]);
+
+module.exports = { create, get, remove };
