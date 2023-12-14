@@ -1,4 +1,3 @@
-const { v4: uuidv4 } = require('uuid'); // Import the uuid library
 const pool = require('./database');
 /** The application will have the ability to create a task,
  * display the list of tasks, and delete tasks.
@@ -40,13 +39,9 @@ Inside the .query() method, pass in the below SQL code to select all items in th
 
 pool.connect();
 
-const create = (todo) =>
+const create = (description) =>
   // eslint-disable-next-line implicit-arrow-linebreak
-  pool.query('INSERT INTO todo (todo_id, description, created_at) VALUES ($1, $2, $3) RETURNING *', [
-    todo.todo_id,
-    todo.description,
-    todo.created_at,
-  ]);
+  pool.query('INSERT INTO todo (description) VALUES ($1) RETURNING *', [description]);
 
 const get = () => pool.query('SELECT * FROM todo');
 

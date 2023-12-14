@@ -10,6 +10,21 @@
  * will contain the contents of the new form.
  */
 
+// export const createTodo = async (todo) => {
+//   try {
+//     const response = await fetch('api/todo/create', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(todo),
+//     });
+//     return response.json();
+//   } catch (error) {
+//     return error;
+//   }
+// };
+
 export const createTodo = async (todo) => {
   try {
     const response = await fetch('api/todo/create', {
@@ -19,6 +34,13 @@ export const createTodo = async (todo) => {
       },
       body: JSON.stringify(todo),
     });
+
+    if (!response.ok) {
+      // Check for error status and throw an error
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.error || 'Failed to create todo');
+    }
+
     return response.json();
   } catch (error) {
     return error;
