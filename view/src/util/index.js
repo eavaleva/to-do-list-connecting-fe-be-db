@@ -10,21 +10,6 @@
  * will contain the contents of the new form.
  */
 
-// export const createTodo = async (todo) => {
-//   try {
-//     const response = await fetch('api/todo/create', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(todo),
-//     });
-//     return response.json();
-//   } catch (error) {
-//     return error;
-//   }
-// };
-
 export const createTodo = async (todo) => {
   try {
     const response = await fetch('api/todo/create', {
